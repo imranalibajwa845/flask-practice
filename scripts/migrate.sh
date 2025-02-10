@@ -1,15 +1,27 @@
 #!/bin/bash
 
-echo "🔄 Applying database migrations..."
+echo "🚀 Starting Flask Application Setup..."
 
-# Check if the virtual environment is activated
+# Activate the virtual environment
 if [[ -z "$VIRTUAL_ENV" ]]; then
-    echo "⚠️  Warning: Virtual environment not activated! Please activate it first."
+    echo "🔹 Activating virtual environment..."
+    source venv/bin/activate  # Adjust if your venv has a different name
 fi
 
-# Run Flask migrations
-flask db init
-flask db migrate -m "Applying migrations"
+# Ensure PostgreSQL is set up before running Flask
+echo "🔹 Running database setup..."
+python config_db.py
+
+# Apply migrations to ensure the latest schema
+echo "🔹 Applying database migrations..."
 flask db upgrade
 
-echo "Migrations applied successfully!"
+# Export necessary environment variables
+export FLASK_APP=run.py
+export FLASK_ENV=development
+
+# Start the Flask application
+echo "🚀 Starting Flask server..."
+flask run --host=0.0.0.0 --port=8001
+
+echo "✅ Flask application is running on http://127.0.0.1:8001"
